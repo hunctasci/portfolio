@@ -21,3 +21,25 @@ export async function getProjects(): Promise<Project[]> {
   }`
   );
 }
+
+export async function getProject(slug: string): Promise<Project> {
+  const client = createClient({
+    projectId: "c12a9tcn",
+    dataset: "production",
+    apiVersion: "2023-08-23",
+  });
+
+  return client.fetch(
+    groq`*[_type == "project' && slug.current == $slug][0]{
+    _id,
+    _createdAt,
+    name,
+    alt,
+    "slug": slug.current,
+    "image": image.asset->url,
+    url,
+    content
+  }`,
+    { slug }
+  );
+}
